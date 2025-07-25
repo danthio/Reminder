@@ -1086,10 +1086,87 @@ def main():
 	def count_newlines(text):
 	    return len(re.findall(r'\n', text))
 
-	can.create_rectangle(519,39, 981,574,outline="#999999",fill="#999999")
+	#can.create_rectangle(519,39, 981,574,outline="#999999",fill="#999999")
 
 
 
+	ar=[]
+
+	r=15
+
+	a_=180
+
+	cx,cy=519-1+r,39-1+r
+
+	for a in range(90):
+
+		x=r*math.sin(math.radians(a_))+cx
+		y=r*math.cos(math.radians(a_))+cy
+
+		x=int(round(x,0))
+		y=int(round(y,0))
+
+		ar.append(x)
+		ar.append(y)
+
+		a_+=1
+
+	a_=270
+
+	cx,cy=519-1+r,574+1-r
+
+	for a in range(90):
+
+		x=r*math.sin(math.radians(a_))+cx
+		y=r*math.cos(math.radians(a_))+cy
+
+		x=int(round(x,0))
+		y=int(round(y,0))
+
+		ar.append(x)
+		ar.append(y)
+
+		a_+=1
+
+
+	a_=0
+
+	cx,cy=981+1-r,574+1-r
+
+	for a in range(90):
+
+		x=r*math.sin(math.radians(a_))+cx
+		y=r*math.cos(math.radians(a_))+cy
+
+		x=int(round(x,0))
+		y=int(round(y,0))
+
+		ar.append(x)
+		ar.append(y)
+
+		a_+=1
+
+
+	a_=90
+
+	cx,cy=981+1-r,39-1+r
+
+	for a in range(90):
+
+		x=r*math.sin(math.radians(a_))+cx
+		y=r*math.cos(math.radians(a_))+cy
+
+		x=int(round(x,0))
+		y=int(round(y,0))
+
+		ar.append(x)
+		ar.append(y)
+
+		a_+=1
+
+
+
+	can.create_polygon(*ar,fill="#ffffff",outline="#000000")
 
 	
 
@@ -1101,12 +1178,9 @@ def main():
 
 		
 
-		can2["width"]=981-519-1
-		can2["height"]=574-39-1
-
 		can2.delete("all")
 
-		can2.place(in_=root,x=520,y=40)
+		can2.place(in_=root,x=519-1+((981+1-519-1)-int(can2["width"]))/2,y=39-1+((574+1-39-1)-int(can2["height"]))/2)
 
 
 
@@ -1319,7 +1393,7 @@ def main():
 		text.insert(tk.END,txt)
 
 
-		text.place(in_=root,x=500+20,y=40)
+		text.place(in_=root,x=519-1+((981+1-519-1)-int(can2["width"]))/2,y=39-1+((574+1-39-1)-int(can2["height"]))/2)
 
 
 
@@ -1700,7 +1774,7 @@ pw.bind("<Return>",focus_pw2)
 pw2=tk.Entry(width=20,font=("FreeMono",13),bg="#ffffff",relief="flat",highlightthickness=0,border=0,show=("*"))
 
 
-text=tk.Text(width=51,height=28,font=("FreeMono",13),bg="#ffffff",relief="flat",highlightthickness=0,border=0,
+text=tk.Text(width=50,height=27,font=("FreeMono",13),bg="#ffffff",relief="flat",highlightthickness=0,border=0,
 	selectbackground="#000000",selectforeground="#ffffff")
 text.config(wrap=tk.WORD)
 
@@ -1711,6 +1785,9 @@ def on_mousewheel(e):
         can2.yview_scroll(int(-1*(e.delta/120)), "units")
 
 can2=tk.Canvas(bg="#ffffff",relief="flat",highlightthickness=0,border=0)
+
+can2["width"]=972-519
+can2["height"]=555-40
 can2.bind("<Button-1>",can2_b1)
 can2.bind_all("<MouseWheel>",on_mousewheel)
 
@@ -1723,11 +1800,12 @@ can3.create_text(0,10,text="Write Reminder...",fill="#777777",anchor="w",font=("
 
 def prompt_to_write():
 	global state2,text
+	global can2
 
 
 	if state2==1:
 		if text.get("1.0",tk.END)=="\n":
-			can3.place(in_=root,x=519+4,y=39+2)
+			can3.place(in_=root,x=519-1+((981+1-519-1)-int(can2["width"]))/2+2,y=39-1+((574+1-39-1)-int(can2["height"]))/2)
 		else:
 			can3.place_forget()
 	else:
