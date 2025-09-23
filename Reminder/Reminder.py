@@ -11,8 +11,19 @@ import math
 import re
 import json
 from dateutil.relativedelta import relativedelta
+from tkinter import font
 
+im=Image.open("data/delete.png")
+im=im.resize((20,20))
+im.save("data/delete.png")
 
+im=Image.open("data/delete2.png")
+im=im.resize((20,20))
+im.save("data/delete2.png")
+
+im=Image.open("data/circle12.png")
+im=im.resize((30,30))
+im.save("data/circle12.png")
 
 months={
 1:"January",
@@ -44,32 +55,40 @@ def can2_b1(e):
 
 		if i[1]<=can2.canvasy(e.y)<=i[2]:
 
-			with open("data/reminder.json","r") as file:
+			d,m,y=get_cur_date()
 
-				data=json.load(file)
-
-
-
-			c=data[str(user)][str(sel_date[0])+"/"+str(sel_date[1])+"/"+str(sel_date[2])][i[0]]
+			ctm=f"{d}/{m}/{y}"
 
 
-			if c==0:
-				c=1
-			elif c==1:
-				c=0
+			if get_time_difference(str(sel_date[0])+"/"+str(sel_date[1])+"/"+str(sel_date[2]),ctm,0)==1:
+
+
+				with open("data/reminder.json","r") as file:
+
+					data=json.load(file)
 
 
 
+				c=data[str(user)][str(sel_date[0])+"/"+str(sel_date[1])+"/"+str(sel_date[2])][i[0]]
 
-			data[str(user)][str(sel_date[0])+"/"+str(sel_date[1])+"/"+str(sel_date[2])][i[0]]=c
+
+				if c==0:
+					c=1
+				elif c==1:
+					c=0
 
 
-			with open("data/reminder.json","w") as file:
 
-				json.dump(data,file,indent=4)
 
-			main()
-			return
+				data[str(user)][str(sel_date[0])+"/"+str(sel_date[1])+"/"+str(sel_date[2])][i[0]]=c
+
+
+				with open("data/reminder.json","w") as file:
+
+					json.dump(data,file,indent=4)
+
+				main()
+				return
 
 
 profile=0
@@ -92,6 +111,10 @@ def can_b1(e):
 
 	global pun,ppw,ppw2
 	global prof_show
+	global del_st1,del_st2
+
+
+
 
 
 
@@ -140,117 +163,144 @@ def can_b1(e):
 					prof_show=0
 
 
+				del_st2=0
+
+
 				main()
 
 
 				return
 
 
+
+		if not profile==0:
 		
 
-		if 551<=e.y<=551+30:
+			if 551<=e.y<=551+30:
 
-			if 60<=e.x<60+(410-60)/2:
-
-
-				if profile==1:
-
-					profile=2
-
-					main()
-
-				elif profile==2:
+				if 60<=e.x<60+(410-60)/2:
 
 
-					if pun.get()=="" or ppw.get()=="" or ppw2.get()=="":
-						message(can,"Fill all Fields!","#f94449","#ffffff",60+10,551-30-5,410-10,551-5)
-						return
+					if profile==1:
 
-					if ppw.get()!=ppw2.get():
+						profile=2
 
-						message(can,"Passwords don't match!","#f94449","#ffffff",60+10,551-30-5,410-10,551-5)
+						main()
 
 						return
 
-
-					db_user=db.connect("data/user.db")
-					cur=db_user.cursor()
-
-					cur.execute("SELECT * FROM user")
-					rows=cur.fetchall()
-
-					for row in rows:
-
-						if not row[0]==user:
-
-							if row[1].lower()==pun.get():
-								message(can,"Name exists!","#f94449","#ffffff",60+10,551-30-5,410-10,551-5)
-								return
-
-					cur.execute("UPDATE user SET user_name='"+str(pun.get())+"',password='"+str(ppw.get())+"' WHERE user_id="+str(user))
-					db_user.commit()
-					db_user.close()
-
-					profile=0
-
-					main()
-
-			elif 60+(410-60)/2<e.x<=410:
+					elif profile==2:
 
 
+						if pun.get()=="" or ppw.get()=="" or ppw2.get()=="":
+							message(can,"Fill all Fields!","#f94449","#ffffff",60+10,551-30-5,410-10,551-5)
+							return
+
+						if ppw.get()!=ppw2.get():
+
+							message(can,"Passwords don't match!","#f94449","#ffffff",60+10,551-30-5,410-10,551-5)
+
+							return
 
 
+						db_user=db.connect("data/user.db")
+						cur=db_user.cursor()
 
-				with open("data/reminder.json","r") as file:
+						cur.execute("SELECT * FROM user")
+						rows=cur.fetchall()
 
-					data=json.load(file)
+						for row in rows:
 
-					try:
+							if not row[0]==user:
 
-						data.pop(str(user))
+								if row[1].lower()==pun.get():
+									message(can,"Name exists!","#f94449","#ffffff",60+10,551-30-5,410-10,551-5)
+									return
 
-						with open("data/reminder.json","w") as file:
+						cur.execute("UPDATE user SET user_name='"+str(pun.get())+"',password='"+str(ppw.get())+"' WHERE user_id="+str(user))
+						db_user.commit()
+						db_user.close()
+
+						profile=0
+
+						main()
+
+						return
+
+				elif 60+(410-60)/2<e.x<=410:
+					if del_st2==0 and profile!=0:
 
 
-							json.dump(data,file,indent=4)
-					except:
-						pass
-
-
-
-
-
-				db_user=db.connect("data/user.db")
-				cur=db_user.cursor()
-
-
-				cur.execute("DELETE FROM user WHERE user_id="+str(user))
-				db_user.commit()
-				db_user.close()
-
-				sel_date=get_cur_date()
-				state2=0
-				profile=0
-				rem_ar=[]
-
-				text.place_forget()
-				can2.place_forget()
-				can3.place_forget()
+						del_st2=1
+						main()
+						return
 
 
 
-				pun.place_forget()
-				ppw.place_forget()
-				ppw2.place_forget()
 
-				login()
+			if del_st2==1:
 
 
+				if 259.5<=e.x<=259.5+20:
+					if 556<=e.y<=556+20:
 
-			return
+
+						with open("data/reminder.json","r") as file:
+
+							data=json.load(file)
+
+							try:
+
+								data.pop(str(user))
+
+								with open("data/reminder.json","w") as file:
 
 
-		if profile!=0:
+									json.dump(data,file,indent=4)
+							except:
+								pass
+
+
+
+
+
+						db_user=db.connect("data/user.db")
+						cur=db_user.cursor()
+
+
+						cur.execute("DELETE FROM user WHERE user_id="+str(user))
+						db_user.commit()
+						db_user.close()
+
+						sel_date=get_cur_date()
+						state2=0
+						profile=0
+						rem_ar=[]
+
+						text.place_forget()
+						can2.place_forget()
+						can3.place_forget()
+
+
+
+						pun.place_forget()
+						ppw.place_forget()
+						ppw2.place_forget()
+
+						del_st1,del_st2=0,0
+
+						login()
+
+						return
+
+				if 365.5<=e.x<=365.5+20:
+					if 556<=e.y<=556+20:
+						del_st2=0
+						main()
+						return
+
+
+			
 
 
 			if 381.5<=e.x<=381.5+22:
@@ -263,7 +313,7 @@ def can_b1(e):
 
 					main()
 
-			return
+					return
 
 
 
@@ -281,6 +331,8 @@ def can_b1(e):
 				can2["scrollregion"]=(0,0,int(can2["width"]),int(can2["height"]))
 
 				state2=0
+
+				del_st1=0
 				main()
 
 				return
@@ -300,6 +352,8 @@ def can_b1(e):
 				can2["scrollregion"]=(0,0,int(can2["width"]),int(can2["height"]))
 
 				state2=0
+
+				del_st1=0
 				main()
 
 				return
@@ -326,6 +380,8 @@ def can_b1(e):
 
 				state2=0
 
+				del_st1=0
+
 				main()
 				return
 
@@ -349,6 +405,8 @@ def can_b1(e):
 				can2["scrollregion"]=(0,0,int(can2["width"]),int(can2["height"]))
 
 				state2=0
+
+				del_st1=0
 				main()
 				return
 
@@ -369,6 +427,8 @@ def can_b1(e):
 
 					can2["scrollregion"]=(0,0,int(can2["width"]),int(can2["height"]))
 
+					del_st1=0
+
 					main()
 
 					return
@@ -382,6 +442,8 @@ def can_b1(e):
 				state2=0
 
 				can2["scrollregion"]=(0,0,int(can2["width"]),int(can2["height"]))
+
+				del_st1=0
 
 				main()
 
@@ -447,38 +509,61 @@ def can_b1(e):
 		#delete
 
 
+
+
+
+		if del_st1==1:
+
+
+
+			if 571<=e.x<=591:
+				if 587.5<=e.y<=587.5+20:
+
+
+
+					if state2==0:
+
+
+
+						try:
+
+							with open("data/reminder.json","r") as file:
+								rem=json.load(file)
+
+							v=rem[str(user)][str(sel_date[0])+"/"+str(sel_date[1])+"/"+str(sel_date[2])]
+
+							rem[str(user)].pop(str(sel_date[0])+"/"+str(sel_date[1])+"/"+str(sel_date[2]))
+
+
+							with open("data/reminder.json","w") as file:
+								json.dump(rem,file,indent=4)
+
+							can2["scrollregion"]=(0,0,int(can2["width"]),int(can2["height"]))
+
+							del_st1=0
+
+							main()
+
+							return
+
+
+						except:
+							return
+
+
+			if 677<=e.x<=697:
+				if 587.5<=e.y<=587.5+20:
+					del_st1=0
+					main()
+					return
+
+
 		if 519-1<=e.x<=749:
 			if 582.5<=e.y<=582.5+30:
 
-				if state2==0:
-
-
-
-					try:
-
-						with open("data/reminder.json","r") as file:
-							rem=json.load(file)
-
-						v=rem[str(user)][str(sel_date[0])+"/"+str(sel_date[1])+"/"+str(sel_date[2])]
-
-						rem[str(user)].pop(str(sel_date[0])+"/"+str(sel_date[1])+"/"+str(sel_date[2]))
-
-
-						with open("data/reminder.json","w") as file:
-							json.dump(rem,file,indent=4)
-
-						can2["scrollregion"]=(0,0,int(can2["width"]),int(can2["height"]))
-
-
-
-						main()
-
-						return
-
-
-					except:
-						return
-
+				del_st1=1
+				main()
+				return
 
 
 		if 500-10-30<=e.x<=500-10-30+30:
@@ -494,9 +579,12 @@ def can_b1(e):
 				can3.place_forget()
 
 
+
 				pun.place_forget()
 				ppw.place_forget()
 				ppw2.place_forget()
+
+				del_st1,del_st2=0,0
 
 				login()
 
@@ -992,13 +1080,22 @@ def det_success():
 		for i in data[str(user)]:
 
 
+			d,m,y=get_cur_date()
 
-			for c in data[str(user)][i]:
+			ctm=f"{d}/{m}/{y}"
 
-				sum_+=1
 
-				if data[str(user)][i][c]==1:
-					scount+=1
+
+			if 	get_time_difference(i,ctm,0)==1:
+
+
+
+				for c in data[str(user)][i]:
+
+					sum_+=1
+
+					if data[str(user)][i][c]==1:
+						scount+=1
 
 
 		return int(scount/sum_*100)
@@ -1007,7 +1104,12 @@ def det_success():
 		return 0
 
 
+
+
 prof_show=0
+
+del_st1,del_st2=0,0
+tv1,tv2,tv3,tv4=0,0,0,0
 def main():
 	global w,h 
 	global state,state2
@@ -1034,6 +1136,9 @@ def main():
 	global pun,ppw,ppw2
 
 	global prof_show
+	global del_st1,del_st2
+	global delete,delete2,cancel
+	global tv1,tv2,tv3
 
 
 	un.place_forget()
@@ -1233,96 +1338,22 @@ def main():
 		x,y=(500-10-30-20-30)-px,(621-30-10)-py
 
 
-		ar=[]
 
-		r=15
-
-		cx,cy=x+r,y+r
-
-		a_=270
+		can.create_image(x,y,image=circle,anchor="nw")
+		can.create_image(x+px-30+1,y,image=circle,anchor="nw")
 
 
-		for a in range(90):
-
-			x_=r*math.sin(math.radians(a_))+cx
-			y_=r*math.cos(math.radians(a_))+cy
-
-			ar.append(round(x_,0))
-			ar.append(round(y_,0))
-
-			a_-=1
+		can.create_polygon(x+15,y, x+px-15,y, x+px,y+15, x+px,y+py-30, x,y+py-30, x,y+15, fill="#ffffff",outline="#ffffff" )
 
 
 
 
-		cx,cy=x+px-r,y+r
-
-		a_=180
-
-
-		for a in range(90):
-
-			x_=r*math.sin(math.radians(a_))+cx
-			y_=r*math.cos(math.radians(a_))+cy
-
-			ar.append(round(x_,0))
-			ar.append(round(y_,0))
-
-			a_-=1
-
-		ar.append(x+px)
-		ar.append(y+py-30-1)
-
-		ar.append(x)
-		ar.append(y+py-30-1)
-
-		can.create_polygon(ar,fill="#ffffff",outline="#ffffff")
-
-		ar=[]
+		can.create_image(x,y+py-30+1,image=circle12,anchor="nw")
+		can.create_image(x+px-30+1,y+py-30+1,image=circle12,anchor="nw")
+		can.create_polygon(x,y+py-30, x+px,y+py-30, x+px,y+py-15, x+px-15,y+py, x+15,y+py, x,y+py-15,
+			x,y+py-30,fill="#38fca5",outline="#38fca5")
 
 
-
-		ar.append(x+px)
-		ar.append(y+py-30-1)
-
-		ar.append(x)
-		ar.append(y+py-30-1)
-
-
-		cx,cy=x+r,y+py-r
-
-		a_=270
-
-
-		for a in range(90):
-
-			x_=r*math.sin(math.radians(a_))+cx
-			y_=r*math.cos(math.radians(a_))+cy
-
-			ar.append(round(x_,0))
-			ar.append(round(y_,0))
-
-			a_+=1
-
-
-		cx,cy=x+px-r,y+py-r
-
-		a_=0
-
-
-		for a in range(90):
-
-			x_=r*math.sin(math.radians(a_))+cx
-			y_=r*math.cos(math.radians(a_))+cy
-
-			ar.append(round(x_,0))
-			ar.append(round(y_,0))
-
-			a_+=1
-
-
-
-		can.create_polygon(ar,fill="#555555",outline="#555555")
 
 
 
@@ -1366,20 +1397,26 @@ def main():
 
 
 
-		can.create_line(x,y+py-30,x+px,y+py-30,fill="#ffffff")
-		can.create_line(x+px/2,y+py-30,x+px/2,y+py,fill="#ffffff")
+		can.create_line(x,y+py-30,x+px,y+py-30,fill="#000000")
+		can.create_line(x+px/2,y+py-30,x+px/2,y+py,fill="#000000")
 
 		if profile==1:
 			txt="Change"
 		elif profile==2:
 			txt="Save"
 
-		can.create_text(x+px/4,y+py-30+15,text=txt,font=("FreeMono",13),fill="#ffffff")
-		can.create_text(x+px-px/4,y+py-30+15,text="Delete",font=("FreeMono",13),fill="#ffffff")
+		can.create_text(x+px/4,y+py-30+15,text=txt,font=("FreeMono",13),fill="#000000")
+		can.create_text(x+px-px/4,y+py-30+15,text="Delete",font=("FreeMono",13),fill="#000000")
 
 
+		if del_st2==1:
+
+			l=get_text_length(can, "Delete", "FreeMono", 13)/2
+			
 
 
+			can.create_image(x+px-px/4-l-20-20,y+py-30+15-10,image=delete2,anchor="nw")
+			can.create_image(x+px-px/4+l+20,y+py-30+15-10,image=cancel,anchor="nw")
 
 
 
@@ -1432,7 +1469,7 @@ def main():
 	def count_newlines(text):
 	    return len(re.findall(r'\n', text))
 
-	#can.create_rectangle(519,39, 981,574,outline="#999999",fill="#999999")
+	#can.create_rectangle(519,39, 981,574,outline="#ffffff",fill="#ffffff")
 
 
 
@@ -1512,7 +1549,7 @@ def main():
 
 
 
-	can.create_polygon(*ar,fill="#ffffff",outline="#000000",width=2)
+	can.create_polygon(*ar,fill="#ffffff",outline="#000000",width=1)
 
 	
 
@@ -1544,6 +1581,10 @@ def main():
 			can.create_image(981+1-19,y+30-19,image=circle7,anchor="nw")
 
 			can.create_polygon(751,y, 981+1-10,y, 981+1,y+10, 981+1,y+30-10, 981+1-10,y+30, 751,y+30,fill="#000000",outline="#000000")
+
+
+
+
 
 
 
@@ -1689,16 +1730,32 @@ def main():
 
 
 
+			if del_st1==1:
+
+				l=get_text_length(can, "Delete", "FreeMono", 13)/2
+
+
+				can.create_image(519-1+xx-l-20-20,y+15-10,image=delete,anchor="nw")
+				can.create_image(519-1+xx+l+20,y+15-10,image=cancel,anchor="nw")
+
+
+
+
+
 		xx=((981+1)-(519-1))/4
 		y=574+((621-574)-30)/2
 
 		can.create_text(519-1+xx,y+15,text="Delete",font=("FreeMono",13),fill=col)
 
 
+
+
 	else:
 
-		y=574+((621-574)-30)/2
 
+
+
+		y=574+((621-574)-30)/2
 
 
 		can.create_image(981+1-19,y,image=circle7,anchor="nw")
@@ -1709,11 +1766,25 @@ def main():
 
 
 
+		if text.get(0.0,tk.END)=="\n":
 
-		can.create_image(519-1,y,image=circle7,anchor="nw")
-		can.create_image(519-1,y+30-19,image=circle7,anchor="nw")
 
-		can.create_polygon(519-1+10,y, 749,y, 749,y+30, 519-1+10,y+30, 519-1,y+30-10, 519-1,y+10,fill="#000000",outline="#000000" )
+
+
+			tv1=can.create_image(519-1,y,image=circle10,anchor="nw")
+			tv2=can.create_image(519-1,y+30-19,image=circle10,anchor="nw")
+
+			tv3=can.create_polygon(519-1+10,y, 749,y, 749,y+30, 519-1+10,y+30, 519-1,y+30-10, 519-1,y+10,fill="#555555",outline="#555555" )
+
+		else:
+
+
+
+
+			tv1=can.create_image(519-1,y,image=circle7,anchor="nw")
+			tv2=can.create_image(519-1,y+30-19,image=circle7,anchor="nw")
+
+			tv3=can.create_polygon(519-1+10,y, 749,y, 749,y+30, 519-1+10,y+30, 519-1,y+30-10, 519-1,y+10,fill="#000000",outline="#000000" )
 
 
 		txt=""
@@ -1745,7 +1816,7 @@ def main():
 
 		xx=((981+1)-(519-1))/4
 
-		can.create_text(519-1+xx,y+15,text="Cancel",font=("FreeMono",13),fill="#ffffff")
+		tv4=can.create_text(519-1+xx,y+15,text="Cancel",font=("FreeMono",13),fill="#ffffff")
 
 		can.create_text(981+1-xx,y+15,text="Create",font=("FreeMono",13),fill="#ffffff")
 
@@ -1759,6 +1830,8 @@ def main():
 	can.create_image(5,h-30-10,image=trend,anchor="nw")
 
 	can.create_text(5+30+10,h-10,text=str(det_success())+" %",font=("FreeMono",13),fill="#38fca5",anchor="sw")
+
+
 
 
 def get_time_difference(time1,time2,c=0,format="%d/%m/%Y"):
@@ -1840,7 +1913,7 @@ def create_account(u,p):
 def create_account_():
 	global w,h
 	global can
-	global circle
+	global circle,circle12
 	global un,pw,pw2
 	global state
 	global show,show1,show2
@@ -1860,15 +1933,15 @@ def create_account_():
 
 	can.create_image(x,y,image=circle,anchor="nw")
 	can.create_image(x+xx-30+1,y,image=circle,anchor="nw")
-	can.create_image(x,y+yy-30+1,image=circle11,anchor="nw")
-	can.create_image(x+xx-30+1,y+yy-30+1,image=circle11,anchor="nw")
+	can.create_image(x,y+yy-30+1,image=circle12,anchor="nw")
+	can.create_image(x+xx-30+1,y+yy-30+1,image=circle12,anchor="nw")
 
-	can.create_polygon(x+15,y, x+xx-15,y, x+xx,y+15, x+xx,y+yy-31,
-		x,y+yy-31, x,y+15,fill="#ffffff",outline="#ffffff")
+	can.create_polygon(x+15,y, x+xx-15,y, x+xx,y+15, x+xx,y+yy-30,
+		x,y+yy-30, x,y+15,fill="#ffffff",outline="#ffffff")
 
 
-	can.create_polygon(x,y+yy-31, x+xx,y+yy-31, x+xx,y+yy-15, x+xx-15,y+yy,
-		x+15,y+yy, x,y+yy-15, x,y+yy-31, fill="#555555",outline="#555555")
+	can.create_polygon(x,y+yy-30, x+xx,y+yy-30, x+xx,y+yy-15, x+xx-15,y+yy,
+		x+15,y+yy, x,y+yy-15, x,y+yy-30, fill="#38fca5",outline="#38fca5")
 
 
 
@@ -1903,12 +1976,12 @@ def create_account_():
 
 
 
-	can.create_line(x,y+yy-30, x+xx,y+yy-30, fill="#ffffff")
-	can.create_line(x+xx/2,y+yy-30, x+xx/2,y+yy, fill="#ffffff")
+	can.create_line(x,y+yy-30, x+xx,y+yy-30, fill="#000000")
+	can.create_line(x+xx/2,y+yy-30, x+xx/2,y+yy, fill="#000000")
 
 
-	can.create_text(x+xx/4,y+yy-15, text="Cancel",font=("FreeMono",13),fill="#ffffff")
-	can.create_text(x+xx-xx/4,y+yy-15, text="Register",font=("FreeMono",13),fill="#ffffff")
+	can.create_text(x+xx/4,y+yy-15, text="Cancel",font=("FreeMono",13),fill="#000000")
+	can.create_text(x+xx-xx/4,y+yy-15, text="Register",font=("FreeMono",13),fill="#000000")
 
 
 
@@ -1918,7 +1991,7 @@ show=0
 def login():
 	global w,h
 	global can
-	global circle,circle11
+	global circle,circle12
 	global un,pw,pw2
 	global state
 	global show,show1,show2
@@ -1941,15 +2014,15 @@ def login():
 
 	can.create_image(x,y,image=circle,anchor="nw")
 	can.create_image(x+xx-30+1,y,image=circle,anchor="nw")
-	can.create_image(x,y+yy-30+1,image=circle11,anchor="nw")
-	can.create_image(x+xx-30+1,y+yy-30+1,image=circle11,anchor="nw")
+	can.create_image(x,y+yy-30+1,image=circle12,anchor="nw")
+	can.create_image(x+xx-30+1,y+yy-30+1,image=circle12,anchor="nw")
 
-	can.create_polygon(x+15,y, x+xx-15,y, x+xx,y+15, x+xx,y+yy-31,
-		x,y+yy-31, x,y+15,fill="#ffffff",outline="#ffffff")
+	can.create_polygon(x+15,y, x+xx-15,y, x+xx,y+15, x+xx,y+yy-30,
+		x,y+yy-30, x,y+15,fill="#ffffff",outline="#ffffff")
 
 
-	can.create_polygon(x,y+yy-31, x+xx,y+yy-31, x+xx,y+yy-15, x+xx-15,y+yy,
-		x+15,y+yy, x,y+yy-15, x,y+yy-31, fill="#555555",outline="#555555")
+	can.create_polygon(x,y+yy-30, x+xx,y+yy-30, x+xx,y+yy-15, x+xx-15,y+yy,
+		x+15,y+yy, x,y+yy-15, x,y+yy-30, fill="#38fca5",outline="#38fca5")
 
 
 
@@ -1980,12 +2053,12 @@ def login():
 
 
 
-	can.create_line(x,y+yy-30, x+xx,y+yy-30, fill="#ffffff")
-	can.create_line(x+xx/2,y+yy-30, x+xx/2,y+yy, fill="#ffffff")
+	can.create_line(x,y+yy-30, x+xx,y+yy-30, fill="#000000")
+	can.create_line(x+xx/2,y+yy-30, x+xx/2,y+yy, fill="#000000")
 
 
-	can.create_text(x+xx/4,y+yy-15, text="Login",font=("FreeMono",13),fill="#ffffff")
-	can.create_text(x+xx-xx/4,y+yy-15, text="Sign Up",font=("FreeMono",13),fill="#ffffff")
+	can.create_text(x+xx/4,y+yy-15, text="Login",font=("FreeMono",13),fill="#000000")
+	can.create_text(x+xx-xx/4,y+yy-15, text="Sign Up",font=("FreeMono",13),fill="#000000")
 
 
 	un.focus_set()
@@ -1994,17 +2067,18 @@ def login():
 
 previous,next_=0,0
 cur_date1,cur_date2=0,0
-circle,circle2,circle3,circle4,circle5,circle6,circle7,circle8,circle9,circle10,circle11=0,0,0,0,0,0,0,0,0,0,0
+circle,circle2,circle3,circle4,circle5,circle6,circle7,circle8,circle9,circle10,circle11,circle12=0,0,0,0,0,0,0,0,0,0,0,0
 checked=0
 logout=0
 show1,show2=0,0
 trend=0
 no_data=0
 my_profile=0
+delete,delete2,cancel=0,0,0
 def load_im():
 	global previous,next_
 	global cur_date1,cur_date2
-	global circle,circle2,circle3,circle4,circle5,circle6,circle7,circle8,circle9,circle10,circle11
+	global circle,circle2,circle3,circle4,circle5,circle6,circle7,circle8,circle9,circle10,circle11,circle12
 	global checked
 	global logout
 	global show1,show2
@@ -2012,6 +2086,7 @@ def load_im():
 	global trend
 	global no_data
 	global my_profile
+	global delete,delete2,cancel
 
 
 	previous=ImageTk.PhotoImage(file="data/previous.png")
@@ -2031,7 +2106,7 @@ def load_im():
 	circle9=ImageTk.PhotoImage(file="data/circle9.png")
 	circle10=ImageTk.PhotoImage(file="data/circle10.png")
 	circle11=ImageTk.PhotoImage(file="data/circle11.png")
-
+	circle12=ImageTk.PhotoImage(file="data/circle12.png")
 
 
 	checked=ImageTk.PhotoImage(file="data/checked.png")	
@@ -2043,6 +2118,9 @@ def load_im():
 	no_data=ImageTk.PhotoImage(file="data/no_data.png")
 	my_profile=ImageTk.PhotoImage(file="data/my_profile.png")
 
+	delete=ImageTk.PhotoImage(file="data/delete.png")
+	delete2=ImageTk.PhotoImage(file="data/delete2.png")
+	cancel=ImageTk.PhotoImage(file="data/cancel.png")
 
 def get_taskbar_height():
     # Get the screen dimensions
@@ -2128,6 +2206,51 @@ text=tk.Text(width=50,height=27,font=("FreeMono",13),bg="#ffffff",relief="flat",
 	selectbackground="#000000",selectforeground="#ffffff")
 text.config(wrap=tk.WORD)
 
+def check_text():
+	global tv1,tv2,tv3,tv4
+	global can,text
+	global state2,state
+
+
+	if state2==1 and state=="main":
+
+
+		can.delete(tv1)
+		can.delete(tv2)
+		can.delete(tv3)
+		can.delete(tv4)
+
+		y=582.5
+
+		if text.get(0.0,tk.END)=="\n":
+
+
+
+
+			tv1=can.create_image(519-1,y,image=circle10,anchor="nw")
+			tv2=can.create_image(519-1,y+30-19,image=circle10,anchor="nw")
+
+			tv3=can.create_polygon(519-1+10,y, 749,y, 749,y+30, 519-1+10,y+30, 519-1,y+30-10, 519-1,y+10,fill="#555555",outline="#555555" )
+			col="#ffffff"
+		else:
+
+
+
+
+			tv1=can.create_image(519-1,y,image=circle7,anchor="nw")
+			tv2=can.create_image(519-1,y+30-19,image=circle7,anchor="nw")
+
+			tv3=can.create_polygon(519-1+10,y, 749,y, 749,y+30, 519-1+10,y+30, 519-1,y+30-10, 519-1,y+10,fill="#000000",outline="#000000" )
+
+
+			col="#ffffff"
+		xx=((981+1)-(519-1))/4
+
+		tv4=can.create_text(519-1+xx,y+15,text="Cancel",font=("FreeMono",13),fill=col)
+
+	root.after(100,check_text)
+
+
 def on_mousewheel(e):
 
     if int(can2["scrollregion"].split(" ")[-1])>int(can2["height"]):
@@ -2155,7 +2278,7 @@ def prompt_to_write():
 
 	if state2==1:
 		if text.get("1.0",tk.END)=="\n":
-			can3.place(in_=root,x=519-1+((981+1-519-1)-int(can2["width"]))/2+2,y=39-1+((574+1-39-1)-int(can2["height"]))/2)
+			can3.place(in_=root,x=519-1+((981+1-519-1)-int(can2["width"]))/2+2+5,y=39-1+((574+1-39-1)-int(can2["height"]))/2)
 		else:
 			can3.place_forget()
 	else:
@@ -2224,4 +2347,6 @@ message_timer()
 prompt_to_write()
 
 update_cur_date()
+
+check_text()
 root.mainloop()
