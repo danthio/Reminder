@@ -13,17 +13,8 @@ import json
 from dateutil.relativedelta import relativedelta
 from tkinter import font
 
-im=Image.open("data/delete.png")
-im=im.resize((20,20))
-im.save("data/delete.png")
 
-im=Image.open("data/delete2.png")
-im=im.resize((20,20))
-im.save("data/delete2.png")
 
-im=Image.open("data/circle12.png")
-im=im.resize((30,30))
-im.save("data/circle12.png")
 
 months={
 1:"January",
@@ -1110,6 +1101,7 @@ prof_show=0
 
 del_st1,del_st2=0,0
 tv1,tv2,tv3,tv4=0,0,0,0
+tv5,tv6,tv7,tv8=0,0,0,0
 def main():
 	global w,h 
 	global state,state2
@@ -1137,8 +1129,9 @@ def main():
 
 	global prof_show
 	global del_st1,del_st2
-	global delete,delete2,cancel
-	global tv1,tv2,tv3
+	global delete,cancel
+	global tv1,tv2,tv3,tv4
+	global tv5,tv6,tv7,tv8
 
 
 	un.place_forget()
@@ -1341,17 +1334,19 @@ def main():
 
 		can.create_image(x,y,image=circle,anchor="nw")
 		can.create_image(x+px-30+1,y,image=circle,anchor="nw")
+		can.create_image(x,y+py-30+1,image=circle,anchor="nw")
+		can.create_image(x+px-30+1,y+py-30+1,image=circle,anchor="nw")
+
+		can.create_polygon(x+15,y, x+px-15,y, x+px,y+15, x+px,y+py-15, x+px-15,y+py, x+15,y+py,
+		x,y+py-15,x,y+15, fill="#ffffff",outline="#ffffff" )
 
 
-		can.create_polygon(x+15,y, x+px-15,y, x+px,y+15, x+px,y+py-30, x,y+py-30, x,y+15, fill="#ffffff",outline="#ffffff" )
 
 
-
-
-		can.create_image(x,y+py-30+1,image=circle12,anchor="nw")
-		can.create_image(x+px-30+1,y+py-30+1,image=circle12,anchor="nw")
-		can.create_polygon(x,y+py-30, x+px,y+py-30, x+px,y+py-15, x+px-15,y+py, x+15,y+py, x,y+py-15,
-			x,y+py-30,fill="#38fca5",outline="#38fca5")
+		can.create_image(x+1,y+py-30+1-1,image=circle12,anchor="nw")
+		can.create_image(x+px-30+1-1,y+py-30+1-1,image=circle12,anchor="nw")
+		can.create_polygon(x+1,y+py-30, x+px-1,y+py-30,x+px-1, y+py-15-1, x+px-1-15,
+			y+py-1, x+1+15,y+py-1, x+1,y+py-1-15,x+1,y+py-30,fill="#000000",outline="#000000")
 
 
 
@@ -1397,16 +1392,15 @@ def main():
 
 
 
-		can.create_line(x,y+py-30,x+px,y+py-30,fill="#000000")
-		can.create_line(x+px/2,y+py-30,x+px/2,y+py,fill="#000000")
+		can.create_line(x+px/2,y+py-30,x+px/2,y+py-1,fill="#ffffff")
 
 		if profile==1:
 			txt="Change"
 		elif profile==2:
 			txt="Save"
 
-		can.create_text(x+px/4,y+py-30+15,text=txt,font=("FreeMono",13),fill="#000000")
-		can.create_text(x+px-px/4,y+py-30+15,text="Delete",font=("FreeMono",13),fill="#000000")
+		can.create_text(x+px/4,y+py-30+15,text=txt,font=("FreeMono",13),fill="#ffffff")
+		can.create_text(x+px-px/4,y+py-30+15,text="Delete",font=("FreeMono",13),fill="#ffffff")
 
 
 		if del_st2==1:
@@ -1415,7 +1409,7 @@ def main():
 			
 
 
-			can.create_image(x+px-px/4-l-20-20,y+py-30+15-10,image=delete2,anchor="nw")
+			can.create_image(x+px-px/4-l-20-20,y+py-30+15-10,image=delete,anchor="nw")
 			can.create_image(x+px-px/4+l+20,y+py-30+15-10,image=cancel,anchor="nw")
 
 
@@ -1776,6 +1770,13 @@ def main():
 
 			tv3=can.create_polygon(519-1+10,y, 749,y, 749,y+30, 519-1+10,y+30, 519-1,y+30-10, 519-1,y+10,fill="#555555",outline="#555555" )
 
+
+			tv5=can.create_image(981+1-19,y,image=circle10,anchor="nw")
+			tv6=can.create_image(981+1-19,y+30-19,image=circle10,anchor="nw")
+
+			tv7=can.create_polygon(751,y, 981+1-10,y, 981+1,y+10, 981+1,y+30-10, 981+1-10,y+30, 751,y+30,fill="#555555",outline="#555555")
+
+
 		else:
 
 
@@ -1785,6 +1786,13 @@ def main():
 			tv2=can.create_image(519-1,y+30-19,image=circle7,anchor="nw")
 
 			tv3=can.create_polygon(519-1+10,y, 749,y, 749,y+30, 519-1+10,y+30, 519-1,y+30-10, 519-1,y+10,fill="#000000",outline="#000000" )
+
+
+
+			tv5=can.create_image(981+1-19,y,image=circle7,anchor="nw")
+			tv6=can.create_image(981+1-19,y+30-19,image=circle7,anchor="nw")
+
+			tv7=can.create_polygon(751,y, 981+1-10,y, 981+1,y+10, 981+1,y+30-10, 981+1-10,y+30, 751,y+30,fill="#000000",outline="#000000")
 
 
 		txt=""
@@ -1818,7 +1826,7 @@ def main():
 
 		tv4=can.create_text(519-1+xx,y+15,text="Cancel",font=("FreeMono",13),fill="#ffffff")
 
-		can.create_text(981+1-xx,y+15,text="Create",font=("FreeMono",13),fill="#ffffff")
+		tv8=can.create_text(981+1-xx,y+15,text="Create",font=("FreeMono",13),fill="#ffffff")
 
 
 
@@ -1931,17 +1939,20 @@ def create_account_():
 
 	x,y=(int(can["width"])-xx)/2,(int(can["height"])-yy)/2
 
+
 	can.create_image(x,y,image=circle,anchor="nw")
 	can.create_image(x+xx-30+1,y,image=circle,anchor="nw")
-	can.create_image(x,y+yy-30+1,image=circle12,anchor="nw")
-	can.create_image(x+xx-30+1,y+yy-30+1,image=circle12,anchor="nw")
+	can.create_image(x,y+yy-30+1,image=circle,anchor="nw")
+	can.create_image(x+xx-30+1,y+yy-30+1,image=circle,anchor="nw")
 
-	can.create_polygon(x+15,y, x+xx-15,y, x+xx,y+15, x+xx,y+yy-30,
-		x,y+yy-30, x,y+15,fill="#ffffff",outline="#ffffff")
+	can.create_polygon(x+15,y, x+xx-15,y, x+xx,y+15, x+xx,y+yy-15, x+xx-15,y+yy,
+		x+15,y+yy,x,y+yy-15, x,y+15,fill="#ffffff",outline="#ffffff")
 
+	can.create_image(x+1,y+yy-30+1-1,image=circle12,anchor="nw")
+	can.create_image(x+xx-30+1-1,y+yy-30+1-1,image=circle12,anchor="nw")
+	can.create_polygon(x+1,y+yy-30,x+xx-1,y+yy-30,x+xx-1,y+yy-15-1,x+xx-1-15,y+yy-1,x+1+15,y+yy-1,
+		x+1,y+yy-1-15,x+1,y+yy-30, fill="#000000",outline="#000000")
 
-	can.create_polygon(x,y+yy-30, x+xx,y+yy-30, x+xx,y+yy-15, x+xx-15,y+yy,
-		x+15,y+yy, x,y+yy-15, x,y+yy-30, fill="#38fca5",outline="#38fca5")
 
 
 
@@ -1976,12 +1987,11 @@ def create_account_():
 
 
 
-	can.create_line(x,y+yy-30, x+xx,y+yy-30, fill="#000000")
-	can.create_line(x+xx/2,y+yy-30, x+xx/2,y+yy, fill="#000000")
+	can.create_line(x+xx/2,y+yy-30, x+xx/2,y+yy-1, fill="#ffffff")
 
 
-	can.create_text(x+xx/4,y+yy-15, text="Cancel",font=("FreeMono",13),fill="#000000")
-	can.create_text(x+xx-xx/4,y+yy-15, text="Register",font=("FreeMono",13),fill="#000000")
+	can.create_text(x+xx/4,y+yy-15, text="Cancel",font=("FreeMono",13),fill="#ff0000")
+	can.create_text(x+xx-xx/4,y+yy-15, text="Register",font=("FreeMono",13),fill="#ffffff")
 
 
 
@@ -2014,16 +2024,16 @@ def login():
 
 	can.create_image(x,y,image=circle,anchor="nw")
 	can.create_image(x+xx-30+1,y,image=circle,anchor="nw")
-	can.create_image(x,y+yy-30+1,image=circle12,anchor="nw")
-	can.create_image(x+xx-30+1,y+yy-30+1,image=circle12,anchor="nw")
+	can.create_image(x,y+yy-30+1,image=circle,anchor="nw")
+	can.create_image(x+xx-30+1,y+yy-30+1,image=circle,anchor="nw")
 
-	can.create_polygon(x+15,y, x+xx-15,y, x+xx,y+15, x+xx,y+yy-30,
-		x,y+yy-30, x,y+15,fill="#ffffff",outline="#ffffff")
+	can.create_polygon(x+15,y, x+xx-15,y, x+xx,y+15, x+xx,y+yy-15, x+xx-15,y+yy,
+		x+15,y+yy,x,y+yy-15, x,y+15,fill="#ffffff",outline="#ffffff")
 
-
-	can.create_polygon(x,y+yy-30, x+xx,y+yy-30, x+xx,y+yy-15, x+xx-15,y+yy,
-		x+15,y+yy, x,y+yy-15, x,y+yy-30, fill="#38fca5",outline="#38fca5")
-
+	can.create_image(x+1,y+yy-30+1-1,image=circle12,anchor="nw")
+	can.create_image(x+xx-30+1-1,y+yy-30+1-1,image=circle12,anchor="nw")
+	can.create_polygon(x+1,y+yy-30,x+xx-1,y+yy-30,x+xx-1,y+yy-15-1,x+xx-1-15,y+yy-1,x+1+15,y+yy-1,
+		x+1,y+yy-1-15,x+1,y+yy-30, fill="#000000",outline="#000000")
 
 
 
@@ -2053,12 +2063,11 @@ def login():
 
 
 
-	can.create_line(x,y+yy-30, x+xx,y+yy-30, fill="#000000")
-	can.create_line(x+xx/2,y+yy-30, x+xx/2,y+yy, fill="#000000")
+	can.create_line(x+xx/2,y+yy-30, x+xx/2,y+yy-1, fill="#ffffff")
 
 
-	can.create_text(x+xx/4,y+yy-15, text="Login",font=("FreeMono",13),fill="#000000")
-	can.create_text(x+xx-xx/4,y+yy-15, text="Sign Up",font=("FreeMono",13),fill="#000000")
+	can.create_text(x+xx/4,y+yy-15, text="Login",font=("FreeMono",13),fill="#ffffff")
+	can.create_text(x+xx-xx/4,y+yy-15, text="Sign Up",font=("FreeMono",13),fill="#ffffff")
 
 
 	un.focus_set()
@@ -2074,7 +2083,7 @@ show1,show2=0,0
 trend=0
 no_data=0
 my_profile=0
-delete,delete2,cancel=0,0,0
+delete,cancel=0,0
 def load_im():
 	global previous,next_
 	global cur_date1,cur_date2
@@ -2086,7 +2095,7 @@ def load_im():
 	global trend
 	global no_data
 	global my_profile
-	global delete,delete2,cancel
+	global delete,cancel
 
 
 	previous=ImageTk.PhotoImage(file="data/previous.png")
@@ -2119,7 +2128,6 @@ def load_im():
 	my_profile=ImageTk.PhotoImage(file="data/my_profile.png")
 
 	delete=ImageTk.PhotoImage(file="data/delete.png")
-	delete2=ImageTk.PhotoImage(file="data/delete2.png")
 	cancel=ImageTk.PhotoImage(file="data/cancel.png")
 
 def get_taskbar_height():
@@ -2207,7 +2215,7 @@ text=tk.Text(width=50,height=27,font=("FreeMono",13),bg="#ffffff",relief="flat",
 text.config(wrap=tk.WORD)
 
 def check_text():
-	global tv1,tv2,tv3,tv4
+	global tv1,tv2,tv3,tv4,tv5,tv6,tv7,tv8
 	global can,text
 	global state2,state
 
@@ -2219,8 +2227,15 @@ def check_text():
 		can.delete(tv2)
 		can.delete(tv3)
 		can.delete(tv4)
-
+		can.delete(tv5)
+		can.delete(tv6)
+		can.delete(tv7)
+		can.delete(tv8)
 		y=582.5
+
+
+
+
 
 		if text.get(0.0,tk.END)=="\n":
 
@@ -2231,6 +2246,15 @@ def check_text():
 			tv2=can.create_image(519-1,y+30-19,image=circle10,anchor="nw")
 
 			tv3=can.create_polygon(519-1+10,y, 749,y, 749,y+30, 519-1+10,y+30, 519-1,y+30-10, 519-1,y+10,fill="#555555",outline="#555555" )
+
+
+			tv5=can.create_image(981+1-19,y,image=circle10,anchor="nw")
+			tv6=can.create_image(981+1-19,y+30-19,image=circle10,anchor="nw")
+
+			tv7=can.create_polygon(751,y, 981+1-10,y, 981+1,y+10, 981+1,y+30-10, 981+1-10,y+30, 751,y+30,fill="#555555",outline="#555555")
+
+
+
 			col="#ffffff"
 		else:
 
@@ -2243,10 +2267,18 @@ def check_text():
 			tv3=can.create_polygon(519-1+10,y, 749,y, 749,y+30, 519-1+10,y+30, 519-1,y+30-10, 519-1,y+10,fill="#000000",outline="#000000" )
 
 
+			tv5=can.create_image(981+1-19,y,image=circle7,anchor="nw")
+			tv6=can.create_image(981+1-19,y+30-19,image=circle7,anchor="nw")
+
+			tv7=can.create_polygon(751,y, 981+1-10,y, 981+1,y+10, 981+1,y+30-10, 981+1-10,y+30, 751,y+30,fill="#000000",outline="#000000")
+
+
+
 			col="#ffffff"
 		xx=((981+1)-(519-1))/4
 
 		tv4=can.create_text(519-1+xx,y+15,text="Cancel",font=("FreeMono",13),fill=col)
+		tv8=can.create_text(981+1-xx,y+15,text="Create",font=("FreeMono",13),fill=col)
 
 	root.after(100,check_text)
 
